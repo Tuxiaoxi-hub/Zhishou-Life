@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.StudyCertificateProfessionMapper">
+
+    <resultMap type="StudyCertificateProfession" id="StudyCertificateProfessionResult">
+        <result property="id"    column="id"    />
+        <result property="certName"    column="cert_name"    />
+        <result property="content"    column="content"    />
+        <result property="condition"    column="condition"    />
+        <result property="process"    column="process"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectStudyCertificateProfessionVo">
+        select id, cert_name, content, `condition`, `process`, create_time, status from study_certificate_profession
+    </sql>
+
+    <select id="selectStudyCertificateProfessionList" parameterType="StudyCertificateProfession" resultMap="StudyCertificateProfessionResult">
+        <include refid="selectStudyCertificateProfessionVo"/>
+        <where>
+            <if test="certName != null  and certName != ''"> and cert_name like concat('%', #{certName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectStudyCertificateProfessionById" parameterType="Long" resultMap="StudyCertificateProfessionResult">
+        <include refid="selectStudyCertificateProfessionVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertStudyCertificateProfession" parameterType="StudyCertificateProfession" useGeneratedKeys="true" keyProperty="id">
+        insert into study_certificate_profession
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="certName != null and certName != ''">cert_name,</if>
+            <if test="content != null">content,</if>
+            <if test="condition != null">`condition`,</if>
+            <if test="process != null">`process`,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="certName != null and certName != ''">#{certName},</if>
+            <if test="content != null">#{content},</if>
+            <if test="condition != null">#{condition},</if>
+            <if test="process != null">#{process},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+
+    <update id="updateStudyCertificateProfession" parameterType="StudyCertificateProfession">
+        update study_certificate_profession
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="certName != null and certName != ''">cert_name = #{certName},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="condition != null">`condition` = #{condition},</if>
+            <if test="process != null">`process` = #{process},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteStudyCertificateProfessionById" parameterType="Long">
+        delete from study_certificate_profession where id = #{id}
+    </delete>
+
+    <delete id="deleteStudyCertificateProfessionByIds" parameterType="String">
+        delete from study_certificate_profession where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

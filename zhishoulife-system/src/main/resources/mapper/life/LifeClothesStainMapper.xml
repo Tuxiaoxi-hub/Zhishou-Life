@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.LifeClothesStainMapper">
+    
+    <resultMap type="LifeClothesStain" id="LifeClothesStainResult">
+        <result property="id"    column="id"    />
+        <result property="stainType"    column="stain_type"    />
+        <result property="content"    column="content"    />
+        <result property="suitable"    column="suitable"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectLifeClothesStainVo">
+        select id, stain_type, content, suitable, attention, create_time, status from life_clothes_stain
+    </sql>
+
+    <select id="selectLifeClothesStainList" parameterType="LifeClothesStain" resultMap="LifeClothesStainResult">
+        <include refid="selectLifeClothesStainVo"/>
+        <where>  
+            <if test="stainType != null  and stainType != ''"> and stain_type like concat('%', #{stainType}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectLifeClothesStainById" parameterType="Long" resultMap="LifeClothesStainResult">
+        <include refid="selectLifeClothesStainVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLifeClothesStain" parameterType="LifeClothesStain" useGeneratedKeys="true" keyProperty="id">
+        insert into life_clothes_stain
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stainType != null">stain_type,</if>
+            <if test="content != null">content,</if>
+            <if test="suitable != null">suitable,</if>
+            <if test="attention != null">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stainType != null">#{stainType},</if>
+            <if test="content != null">#{content},</if>
+            <if test="suitable != null">#{suitable},</if>
+            <if test="attention != null">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLifeClothesStain" parameterType="LifeClothesStain">
+        update life_clothes_stain
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stainType != null">stain_type = #{stainType},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="suitable != null">suitable = #{suitable},</if>
+            <if test="attention != null">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLifeClothesStainById" parameterType="Long">
+        delete from life_clothes_stain where id = #{id}
+    </delete>
+
+    <delete id="deleteLifeClothesStainByIds" parameterType="String">
+        delete from life_clothes_stain where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

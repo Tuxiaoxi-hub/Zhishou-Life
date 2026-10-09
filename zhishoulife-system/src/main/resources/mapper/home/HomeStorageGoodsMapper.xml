@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.HomeStorageGoodsMapper">
+    
+    <resultMap type="HomeStorageGoods" id="HomeStorageGoodsResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectHomeStorageGoodsVo">
+        select id, title, content, attention, create_time, status from home_storage_goods
+    </sql>
+
+    <select id="selectHomeStorageGoodsList" parameterType="HomeStorageGoods" resultMap="HomeStorageGoodsResult">
+        <include refid="selectHomeStorageGoodsVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectHomeStorageGoodsById" parameterType="Long" resultMap="HomeStorageGoodsResult">
+        <include refid="selectHomeStorageGoodsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHomeStorageGoods" parameterType="HomeStorageGoods" useGeneratedKeys="true" keyProperty="id">
+        insert into home_storage_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="content != null">content,</if>
+            <if test="attention != null">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="attention != null">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHomeStorageGoods" parameterType="HomeStorageGoods">
+        update home_storage_goods
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="attention != null">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHomeStorageGoodsById" parameterType="Long">
+        delete from home_storage_goods where id = #{id}
+    </delete>
+
+    <delete id="deleteHomeStorageGoodsByIds" parameterType="String">
+        delete from home_storage_goods where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

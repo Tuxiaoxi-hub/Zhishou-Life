@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.LifeClothesStorageMapper">
+    
+    <resultMap type="LifeClothesStorage" id="LifeClothesStorageResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="tool"    column="tool"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectLifeClothesStorageVo">
+        select id, title, content, tool, attention, create_time, status from life_clothes_storage
+    </sql>
+
+    <select id="selectLifeClothesStorageList" parameterType="LifeClothesStorage" resultMap="LifeClothesStorageResult">
+        <include refid="selectLifeClothesStorageVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="tool != null  and tool != ''"> and tool = #{tool}</if>
+            <if test="attention != null  and attention != ''"> and attention = #{attention}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectLifeClothesStorageById" parameterType="Long" resultMap="LifeClothesStorageResult">
+        <include refid="selectLifeClothesStorageVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLifeClothesStorage" parameterType="LifeClothesStorage" useGeneratedKeys="true" keyProperty="id">
+        insert into life_clothes_storage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="content != null">content,</if>
+            <if test="tool != null">tool,</if>
+            <if test="attention != null">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="tool != null">#{tool},</if>
+            <if test="attention != null">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLifeClothesStorage" parameterType="LifeClothesStorage">
+        update life_clothes_storage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="tool != null">tool = #{tool},</if>
+            <if test="attention != null">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLifeClothesStorageById" parameterType="Long">
+        delete from life_clothes_storage where id = #{id}
+    </delete>
+
+    <delete id="deleteLifeClothesStorageByIds" parameterType="String">
+        delete from life_clothes_storage where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.TrafficSignIdentifyMapper">
+    
+    <resultMap type="TrafficSignIdentify" id="TrafficSignIdentifyResult">
+        <result property="id"    column="id"    />
+        <result property="signName"    column="sign_name"    />
+        <result property="signImg"    column="sign_img"    />
+        <result property="content"    column="content"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="STATUS"    />
+    </resultMap>
+
+    <sql id="selectTrafficSignIdentifyVo">
+        select id, sign_name, sign_img, content, attention, create_time, STATUS from traffic_sign_identify
+    </sql>
+
+    <select id="selectTrafficSignIdentifyList" parameterType="TrafficSignIdentify" resultMap="TrafficSignIdentifyResult">
+        <include refid="selectTrafficSignIdentifyVo"/>
+        <where>  
+            <if test="signName != null  and signName != ''"> and sign_name like concat('%', #{signName}, '%')</if>
+            <if test="status != null "> and STATUS = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectTrafficSignIdentifyById" parameterType="Long" resultMap="TrafficSignIdentifyResult">
+        <include refid="selectTrafficSignIdentifyVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTrafficSignIdentify" parameterType="TrafficSignIdentify" useGeneratedKeys="true" keyProperty="id">
+        insert into traffic_sign_identify
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="signName != null and signName != ''">sign_name,</if>
+            <if test="signImg != null">sign_img,</if>
+            <if test="content != null">content,</if>
+            <if test="attention != null">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">STATUS,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="signName != null and signName != ''">#{signName},</if>
+            <if test="signImg != null">#{signImg},</if>
+            <if test="content != null">#{content},</if>
+            <if test="attention != null">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTrafficSignIdentify" parameterType="TrafficSignIdentify">
+        update traffic_sign_identify
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="signName != null and signName != ''">sign_name = #{signName},</if>
+            <if test="signImg != null">sign_img = #{signImg},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="attention != null">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">STATUS = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTrafficSignIdentifyById" parameterType="Long">
+        delete from traffic_sign_identify where id = #{id}
+    </delete>
+
+    <delete id="deleteTrafficSignIdentifyByIds" parameterType="String">
+        delete from traffic_sign_identify where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

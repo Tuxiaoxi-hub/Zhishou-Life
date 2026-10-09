@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.StudySkillOfficeMapper">
+    
+    <resultMap type="StudySkillOffice" id="StudySkillOfficeResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="suitable"    column="suitable"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="STATUS"    />
+    </resultMap>
+
+    <sql id="selectStudySkillOfficeVo">
+        select id, title, content, suitable, create_time, STATUS from study_skill_office
+    </sql>
+
+    <select id="selectStudySkillOfficeList" parameterType="StudySkillOffice" resultMap="StudySkillOfficeResult">
+        <include refid="selectStudySkillOfficeVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and STATUS = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectStudySkillOfficeById" parameterType="Long" resultMap="StudySkillOfficeResult">
+        <include refid="selectStudySkillOfficeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertStudySkillOffice" parameterType="StudySkillOffice" useGeneratedKeys="true" keyProperty="id">
+        insert into study_skill_office
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null">content,</if>
+            <if test="suitable != null">suitable,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">STATUS,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="suitable != null">#{suitable},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStudySkillOffice" parameterType="StudySkillOffice">
+        update study_skill_office
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="suitable != null">suitable = #{suitable},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">STATUS = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteStudySkillOfficeById" parameterType="Long">
+        delete from study_skill_office where id = #{id}
+    </delete>
+
+    <delete id="deleteStudySkillOfficeByIds" parameterType="String">
+        delete from study_skill_office where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

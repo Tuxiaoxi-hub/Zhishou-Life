@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.LifeFoodCookMapper">
+    
+    <resultMap type="LifeFoodCook" id="LifeFoodCookResult">
+        <result property="id"    column="id"    />
+        <result property="dishName"    column="dish_name"    />
+        <result property="cover"    column="cover"    />
+        <result property="ingredient"    column="ingredient"    />
+        <result property="step"    column="step"    />
+        <result property="skill"    column="skill"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectLifeFoodCookVo">
+        select id, dish_name, cover, ingredient, step, skill, create_time, status from life_food_cook
+    </sql>
+
+    <select id="selectLifeFoodCookList" parameterType="LifeFoodCook" resultMap="LifeFoodCookResult">
+        <include refid="selectLifeFoodCookVo"/>
+        <where>  
+            <if test="dishName != null  and dishName != ''"> and dish_name like concat('%', #{dishName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectLifeFoodCookById" parameterType="Long" resultMap="LifeFoodCookResult">
+        <include refid="selectLifeFoodCookVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLifeFoodCook" parameterType="LifeFoodCook" useGeneratedKeys="true" keyProperty="id">
+        insert into life_food_cook
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dishName != null">dish_name,</if>
+            <if test="cover != null">cover,</if>
+            <if test="ingredient != null">ingredient,</if>
+            <if test="step != null">step,</if>
+            <if test="skill != null">skill,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dishName != null">#{dishName},</if>
+            <if test="cover != null">#{cover},</if>
+            <if test="ingredient != null">#{ingredient},</if>
+            <if test="step != null">#{step},</if>
+            <if test="skill != null">#{skill},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLifeFoodCook" parameterType="LifeFoodCook">
+        update life_food_cook
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dishName != null">dish_name = #{dishName},</if>
+            <if test="cover != null">cover = #{cover},</if>
+            <if test="ingredient != null">ingredient = #{ingredient},</if>
+            <if test="step != null">step = #{step},</if>
+            <if test="skill != null">skill = #{skill},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLifeFoodCookById" parameterType="Long">
+        delete from life_food_cook where id = #{id}
+    </delete>
+
+    <delete id="deleteLifeFoodCookByIds" parameterType="String">
+        delete from life_food_cook where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

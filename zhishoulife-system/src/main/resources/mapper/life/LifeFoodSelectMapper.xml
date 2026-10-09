@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.LifeFoodSelectMapper">
+    
+    <resultMap type="LifeFoodSelect" id="LifeFoodSelectResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="cover"    column="cover"    />
+        <result property="content"    column="content"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectLifeFoodSelectVo">
+        select id, title, cover, content, attention, create_time, status from life_food_select
+    </sql>
+
+    <select id="selectLifeFoodSelectList" parameterType="LifeFoodSelect" resultMap="LifeFoodSelectResult">
+        <include refid="selectLifeFoodSelectVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectLifeFoodSelectById" parameterType="Long" resultMap="LifeFoodSelectResult">
+        <include refid="selectLifeFoodSelectVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLifeFoodSelect" parameterType="LifeFoodSelect" useGeneratedKeys="true" keyProperty="id">
+        insert into life_food_select
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="cover != null">cover,</if>
+            <if test="content != null">content,</if>
+            <if test="attention != null">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="cover != null">#{cover},</if>
+            <if test="content != null">#{content},</if>
+            <if test="attention != null">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLifeFoodSelect" parameterType="LifeFoodSelect">
+        update life_food_select
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="cover != null">cover = #{cover},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="attention != null">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLifeFoodSelectById" parameterType="Long">
+        delete from life_food_select where id = #{id}
+    </delete>
+
+    <delete id="deleteLifeFoodSelectByIds" parameterType="String">
+        delete from life_food_select where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

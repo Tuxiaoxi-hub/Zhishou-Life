@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.HealthCheckupMapper">
+    
+    <resultMap type="HealthCheckup" id="HealthCheckupResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="attention"    column="attention"    />
+        <result property="crowd"    column="crowd"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectHealthCheckupVo">
+        select id, title, content, attention, crowd, create_time, status from health_checkup
+    </sql>
+
+    <select id="selectHealthCheckupList" parameterType="HealthCheckup" resultMap="HealthCheckupResult">
+        <include refid="selectHealthCheckupVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectHealthCheckupById" parameterType="Long" resultMap="HealthCheckupResult">
+        <include refid="selectHealthCheckupVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHealthCheckup" parameterType="HealthCheckup" useGeneratedKeys="true" keyProperty="id">
+        insert into health_checkup
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="attention != null and attention != ''">attention,</if>
+            <if test="crowd != null and crowd != ''">crowd,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="attention != null and attention != ''">#{attention},</if>
+            <if test="crowd != null and crowd != ''">#{crowd},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHealthCheckup" parameterType="HealthCheckup">
+        update health_checkup
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="attention != null and attention != ''">attention = #{attention},</if>
+            <if test="crowd != null and crowd != ''">crowd = #{crowd},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHealthCheckupById" parameterType="Long">
+        delete from health_checkup where id = #{id}
+    </delete>
+
+    <delete id="deleteHealthCheckupByIds" parameterType="String">
+        delete from health_checkup where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

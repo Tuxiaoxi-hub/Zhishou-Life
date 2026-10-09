@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.HealthBasicNursingMapper">
+    
+    <resultMap type="HealthBasicNursing" id="HealthBasicNursingResult">
+        <result property="id"    column="id"    />
+        <result property="diseaseName"    column="disease_name"    />
+        <result property="content"    column="content"    />
+        <result property="suitable"    column="suitable"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectHealthBasicNursingVo">
+        select id, disease_name, content, suitable, attention, create_time, status from health_basic_nursing
+    </sql>
+
+    <select id="selectHealthBasicNursingList" parameterType="HealthBasicNursing" resultMap="HealthBasicNursingResult">
+        <include refid="selectHealthBasicNursingVo"/>
+        <where>  
+            <if test="diseaseName != null  and diseaseName != ''"> and disease_name like concat('%', #{diseaseName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectHealthBasicNursingById" parameterType="Long" resultMap="HealthBasicNursingResult">
+        <include refid="selectHealthBasicNursingVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHealthBasicNursing" parameterType="HealthBasicNursing" useGeneratedKeys="true" keyProperty="id">
+        insert into health_basic_nursing
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="diseaseName != null and diseaseName != ''">disease_name,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="suitable != null and suitable != ''">suitable,</if>
+            <if test="attention != null and attention != ''">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="diseaseName != null and diseaseName != ''">#{diseaseName},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="suitable != null and suitable != ''">#{suitable},</if>
+            <if test="attention != null and attention != ''">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHealthBasicNursing" parameterType="HealthBasicNursing">
+        update health_basic_nursing
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="diseaseName != null and diseaseName != ''">disease_name = #{diseaseName},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="suitable != null and suitable != ''">suitable = #{suitable},</if>
+            <if test="attention != null and attention != ''">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHealthBasicNursingById" parameterType="Long">
+        delete from health_basic_nursing where id = #{id}
+    </delete>
+
+    <delete id="deleteHealthBasicNursingByIds" parameterType="String">
+        delete from health_basic_nursing where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

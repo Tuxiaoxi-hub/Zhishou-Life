@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.LifeClothesCleanMapper">
+    
+    <resultMap type="LifeClothesClean" id="LifeClothesCleanResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="cover"    column="cover"    />
+        <result property="content"    column="content"    />
+        <result property="maintain"    column="maintain"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectLifeClothesCleanVo">
+        select id, title, cover, content, maintain, create_time, status from life_clothes_clean
+    </sql>
+
+    <select id="selectLifeClothesCleanList" parameterType="LifeClothesClean" resultMap="LifeClothesCleanResult">
+        <include refid="selectLifeClothesCleanVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectLifeClothesCleanById" parameterType="Long" resultMap="LifeClothesCleanResult">
+        <include refid="selectLifeClothesCleanVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLifeClothesClean" parameterType="LifeClothesClean" useGeneratedKeys="true" keyProperty="id">
+        insert into life_clothes_clean
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="cover != null">cover,</if>
+            <if test="content != null">content,</if>
+            <if test="maintain != null">maintain,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="cover != null">#{cover},</if>
+            <if test="content != null">#{content},</if>
+            <if test="maintain != null">#{maintain},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLifeClothesClean" parameterType="LifeClothesClean">
+        update life_clothes_clean
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="cover != null">cover = #{cover},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="maintain != null">maintain = #{maintain},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLifeClothesCleanById" parameterType="Long">
+        delete from life_clothes_clean where id = #{id}
+    </delete>
+
+    <delete id="deleteLifeClothesCleanByIds" parameterType="String">
+        delete from life_clothes_clean where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

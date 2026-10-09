@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.HealthTraumaTreatMapper">
+    
+    <resultMap type="HealthTraumaTreat" id="HealthTraumaTreatResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectHealthTraumaTreatVo">
+        select id, title, content, attention, create_time, status from health_trauma_treat
+    </sql>
+
+    <select id="selectHealthTraumaTreatList" parameterType="HealthTraumaTreat" resultMap="HealthTraumaTreatResult">
+        <include refid="selectHealthTraumaTreatVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectHealthTraumaTreatById" parameterType="Long" resultMap="HealthTraumaTreatResult">
+        <include refid="selectHealthTraumaTreatVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHealthTraumaTreat" parameterType="HealthTraumaTreat" useGeneratedKeys="true" keyProperty="id">
+        insert into health_trauma_treat
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="attention != null and attention != ''">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="attention != null and attention != ''">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHealthTraumaTreat" parameterType="HealthTraumaTreat">
+        update health_trauma_treat
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="attention != null and attention != ''">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHealthTraumaTreatById" parameterType="Long">
+        delete from health_trauma_treat where id = #{id}
+    </delete>
+
+    <delete id="deleteHealthTraumaTreatByIds" parameterType="String">
+        delete from health_trauma_treat where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.TrafficPublicSafeMapper">
+    
+    <resultMap type="TrafficPublicSafe" id="TrafficPublicSafeResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="STATUS"    />
+    </resultMap>
+
+    <sql id="selectTrafficPublicSafeVo">
+        select id, title, content, attention, create_time, STATUS from traffic_public_safe
+    </sql>
+
+    <select id="selectTrafficPublicSafeList" parameterType="TrafficPublicSafe" resultMap="TrafficPublicSafeResult">
+        <include refid="selectTrafficPublicSafeVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and STATUS = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectTrafficPublicSafeById" parameterType="Long" resultMap="TrafficPublicSafeResult">
+        <include refid="selectTrafficPublicSafeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTrafficPublicSafe" parameterType="TrafficPublicSafe" useGeneratedKeys="true" keyProperty="id">
+        insert into traffic_public_safe
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null">content,</if>
+            <if test="attention != null">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">STATUS,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="attention != null">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTrafficPublicSafe" parameterType="TrafficPublicSafe">
+        update traffic_public_safe
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="attention != null">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">STATUS = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTrafficPublicSafeById" parameterType="Long">
+        delete from traffic_public_safe where id = #{id}
+    </delete>
+
+    <delete id="deleteTrafficPublicSafeByIds" parameterType="String">
+        delete from traffic_public_safe where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

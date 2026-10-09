@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.LifeConsumptionChannelMapper">
+    
+    <resultMap type="LifeConsumptionChannel" id="LifeConsumptionChannelResult">
+        <result property="id"    column="id"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="content"    column="content"    />
+        <result property="contact"    column="contact"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectLifeConsumptionChannelVo">
+        select id, channel_name, content, contact, attention, create_time, status from life_consumption_channel
+    </sql>
+
+    <select id="selectLifeConsumptionChannelList" parameterType="LifeConsumptionChannel" resultMap="LifeConsumptionChannelResult">
+        <include refid="selectLifeConsumptionChannelVo"/>
+        <where>  
+            <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectLifeConsumptionChannelById" parameterType="Long" resultMap="LifeConsumptionChannelResult">
+        <include refid="selectLifeConsumptionChannelVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLifeConsumptionChannel" parameterType="LifeConsumptionChannel" useGeneratedKeys="true" keyProperty="id">
+        insert into life_consumption_channel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channelName != null">channel_name,</if>
+            <if test="content != null">content,</if>
+            <if test="contact != null">contact,</if>
+            <if test="attention != null">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channelName != null">#{channelName},</if>
+            <if test="content != null">#{content},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="attention != null">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLifeConsumptionChannel" parameterType="LifeConsumptionChannel">
+        update life_consumption_channel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelName != null">channel_name = #{channelName},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="attention != null">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLifeConsumptionChannelById" parameterType="Long">
+        delete from life_consumption_channel where id = #{id}
+    </delete>
+
+    <delete id="deleteLifeConsumptionChannelByIds" parameterType="String">
+        delete from life_consumption_channel where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

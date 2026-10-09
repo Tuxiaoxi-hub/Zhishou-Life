@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.HomeStorageSpaceMapper">
+    
+    <resultMap type="HomeStorageSpace" id="HomeStorageSpaceResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="tool"    column="tool"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectHomeStorageSpaceVo">
+        select id, title, content, tool, attention, create_time, status from home_storage_space
+    </sql>
+
+    <select id="selectHomeStorageSpaceList" parameterType="HomeStorageSpace" resultMap="HomeStorageSpaceResult">
+        <include refid="selectHomeStorageSpaceVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectHomeStorageSpaceById" parameterType="Long" resultMap="HomeStorageSpaceResult">
+        <include refid="selectHomeStorageSpaceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHomeStorageSpace" parameterType="HomeStorageSpace" useGeneratedKeys="true" keyProperty="id">
+        insert into home_storage_space
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="content != null">content,</if>
+            <if test="tool != null">tool,</if>
+            <if test="attention != null">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="tool != null">#{tool},</if>
+            <if test="attention != null">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHomeStorageSpace" parameterType="HomeStorageSpace">
+        update home_storage_space
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="tool != null">tool = #{tool},</if>
+            <if test="attention != null">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHomeStorageSpaceById" parameterType="Long">
+        delete from home_storage_space where id = #{id}
+    </delete>
+
+    <delete id="deleteHomeStorageSpaceByIds" parameterType="String">
+        delete from home_storage_space where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

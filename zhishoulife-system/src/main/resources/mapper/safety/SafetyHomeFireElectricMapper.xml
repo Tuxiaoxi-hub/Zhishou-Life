@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.SafetyHomeFireElectricMapper">
+    
+    <resultMap type="SafetyHomeFireElectric" id="SafetyHomeFireElectricResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="danger"    column="danger"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectSafetyHomeFireElectricVo">
+        select id, title, content, danger, create_time, status from safety_home_fire_electric
+    </sql>
+
+    <select id="selectSafetyHomeFireElectricList" parameterType="SafetyHomeFireElectric" resultMap="SafetyHomeFireElectricResult">
+        <include refid="selectSafetyHomeFireElectricVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectSafetyHomeFireElectricById" parameterType="Long" resultMap="SafetyHomeFireElectricResult">
+        <include refid="selectSafetyHomeFireElectricVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSafetyHomeFireElectric" parameterType="SafetyHomeFireElectric" useGeneratedKeys="true" keyProperty="id">
+        insert into safety_home_fire_electric
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="danger != null and danger != ''">danger,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="danger != null and danger != ''">#{danger},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSafetyHomeFireElectric" parameterType="SafetyHomeFireElectric">
+        update safety_home_fire_electric
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="danger != null and danger != ''">danger = #{danger},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSafetyHomeFireElectricById" parameterType="Long">
+        delete from safety_home_fire_electric where id = #{id}
+    </delete>
+
+    <delete id="deleteSafetyHomeFireElectricByIds" parameterType="String">
+        delete from safety_home_fire_electric where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

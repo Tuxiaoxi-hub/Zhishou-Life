@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.SafetyFoodTakeawayMapper">
+    
+    <resultMap type="SafetyFoodTakeaway" id="SafetyFoodTakeawayResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="attention"    column="attention"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectSafetyFoodTakeawayVo">
+        select id, title, content, attention, status, create_time from safety_food_takeaway
+    </sql>
+
+    <select id="selectSafetyFoodTakeawayList" parameterType="SafetyFoodTakeaway" resultMap="SafetyFoodTakeawayResult">
+        <include refid="selectSafetyFoodTakeawayVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectSafetyFoodTakeawayById" parameterType="Long" resultMap="SafetyFoodTakeawayResult">
+        <include refid="selectSafetyFoodTakeawayVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSafetyFoodTakeaway" parameterType="SafetyFoodTakeaway" useGeneratedKeys="true" keyProperty="id">
+        insert into safety_food_takeaway
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="attention != null and attention != ''">attention,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="attention != null and attention != ''">#{attention},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSafetyFoodTakeaway" parameterType="SafetyFoodTakeaway">
+        update safety_food_takeaway
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="attention != null and attention != ''">attention = #{attention},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSafetyFoodTakeawayById" parameterType="Long">
+        delete from safety_food_takeaway where id = #{id}
+    </delete>
+
+    <delete id="deleteSafetyFoodTakeawayByIds" parameterType="String">
+        delete from safety_food_takeaway where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

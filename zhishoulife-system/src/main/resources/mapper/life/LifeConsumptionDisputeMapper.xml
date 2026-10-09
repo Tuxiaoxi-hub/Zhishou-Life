@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.LifeConsumptionDisputeMapper">
+    
+    <resultMap type="LifeConsumptionDispute" id="LifeConsumptionDisputeResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="evidence"    column="evidence"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectLifeConsumptionDisputeVo">
+        select id, title, content, evidence, create_time, status from life_consumption_dispute
+    </sql>
+
+    <select id="selectLifeConsumptionDisputeList" parameterType="LifeConsumptionDispute" resultMap="LifeConsumptionDisputeResult">
+        <include refid="selectLifeConsumptionDisputeVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectLifeConsumptionDisputeById" parameterType="Long" resultMap="LifeConsumptionDisputeResult">
+        <include refid="selectLifeConsumptionDisputeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertLifeConsumptionDispute" parameterType="LifeConsumptionDispute" useGeneratedKeys="true" keyProperty="id">
+        insert into life_consumption_dispute
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="content != null">content,</if>
+            <if test="evidence != null">evidence,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="evidence != null">#{evidence},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLifeConsumptionDispute" parameterType="LifeConsumptionDispute">
+        update life_consumption_dispute
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="evidence != null">evidence = #{evidence},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLifeConsumptionDisputeById" parameterType="Long">
+        delete from life_consumption_dispute where id = #{id}
+    </delete>
+
+    <delete id="deleteLifeConsumptionDisputeByIds" parameterType="String">
+        delete from life_consumption_dispute where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

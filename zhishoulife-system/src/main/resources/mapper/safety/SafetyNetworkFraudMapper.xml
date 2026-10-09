@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.SafetyNetworkFraudMapper">
+    
+    <resultMap type="SafetyNetworkFraud" id="SafetyNetworkFraudResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="prevent"    column="prevent"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectSafetyNetworkFraudVo">
+        select id, title, content, prevent, create_time, status from safety_network_fraud
+    </sql>
+
+    <select id="selectSafetyNetworkFraudList" parameterType="SafetyNetworkFraud" resultMap="SafetyNetworkFraudResult">
+        <include refid="selectSafetyNetworkFraudVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectSafetyNetworkFraudById" parameterType="Long" resultMap="SafetyNetworkFraudResult">
+        <include refid="selectSafetyNetworkFraudVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSafetyNetworkFraud" parameterType="SafetyNetworkFraud" useGeneratedKeys="true" keyProperty="id">
+        insert into safety_network_fraud
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="prevent != null and prevent != ''">prevent,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="prevent != null and prevent != ''">#{prevent},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSafetyNetworkFraud" parameterType="SafetyNetworkFraud">
+        update safety_network_fraud
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="prevent != null and prevent != ''">prevent = #{prevent},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSafetyNetworkFraudById" parameterType="Long">
+        delete from safety_network_fraud where id = #{id}
+    </delete>
+
+    <delete id="deleteSafetyNetworkFraudByIds" parameterType="String">
+        delete from safety_network_fraud where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

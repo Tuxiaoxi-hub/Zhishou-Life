@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.HealthDrugSafetyMapper">
+    
+    <resultMap type="HealthDrugSafety" id="HealthDrugSafetyResult">
+        <result property="id"    column="id"    />
+        <result property="drugName"    column="drug_name"    />
+        <result property="drugImg"    column="drug_img"    />
+        <result property="drugType"    column="drug_type"    />
+        <result property="indication"    column="indication"    />
+        <result property="usageMethod"    column="usage_method"    />
+        <result property="attention"    column="attention"    />
+        <result property="taboo"    column="taboo"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectHealthDrugSafetyVo">
+        select id, drug_name, drug_img, drug_type, indication, usage_method, attention, taboo, create_time, status from health_drug_safety
+    </sql>
+
+    <select id="selectHealthDrugSafetyList" parameterType="HealthDrugSafety" resultMap="HealthDrugSafetyResult">
+        <include refid="selectHealthDrugSafetyVo"/>
+        <where>  
+            <if test="drugName != null  and drugName != ''"> and drug_name like concat('%', #{drugName}, '%')</if>
+            <if test="drugType != null  and drugType != ''"> and drug_type = #{drugType}</if>
+            <if test="indication != null  and indication != ''"> and indication = #{indication}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectHealthDrugSafetyById" parameterType="Long" resultMap="HealthDrugSafetyResult">
+        <include refid="selectHealthDrugSafetyVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHealthDrugSafety" parameterType="HealthDrugSafety" useGeneratedKeys="true" keyProperty="id">
+        insert into health_drug_safety
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="drugName != null and drugName != ''">drug_name,</if>
+            <if test="drugImg != null and drugImg != ''">drug_img,</if>
+            <if test="drugType != null and drugType != ''">drug_type,</if>
+            <if test="indication != null and indication != ''">indication,</if>
+            <if test="usageMethod != null and usageMethod != ''">usage_method,</if>
+            <if test="attention != null and attention != ''">attention,</if>
+            <if test="taboo != null and taboo != ''">taboo,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="drugName != null and drugName != ''">#{drugName},</if>
+            <if test="drugImg != null and drugImg != ''">#{drugImg},</if>
+            <if test="drugType != null and drugType != ''">#{drugType},</if>
+            <if test="indication != null and indication != ''">#{indication},</if>
+            <if test="usageMethod != null and usageMethod != ''">#{usageMethod},</if>
+            <if test="attention != null and attention != ''">#{attention},</if>
+            <if test="taboo != null and taboo != ''">#{taboo},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHealthDrugSafety" parameterType="HealthDrugSafety">
+        update health_drug_safety
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="drugName != null and drugName != ''">drug_name = #{drugName},</if>
+            <if test="drugImg != null and drugImg != ''">drug_img = #{drugImg},</if>
+            <if test="drugType != null and drugType != ''">drug_type = #{drugType},</if>
+            <if test="indication != null and indication != ''">indication = #{indication},</if>
+            <if test="usageMethod != null and usageMethod != ''">usage_method = #{usageMethod},</if>
+            <if test="attention != null and attention != ''">attention = #{attention},</if>
+            <if test="taboo != null and taboo != ''">taboo = #{taboo},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHealthDrugSafetyById" parameterType="Long">
+        delete from health_drug_safety where id = #{id}
+    </delete>
+
+    <delete id="deleteHealthDrugSafetyByIds" parameterType="String">
+        delete from health_drug_safety where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

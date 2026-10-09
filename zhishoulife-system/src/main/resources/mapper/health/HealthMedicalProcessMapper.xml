@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.HealthMedicalProcessMapper">
+    
+    <resultMap type="HealthMedicalProcess" id="HealthMedicalProcessResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="material"    column="material"    />
+        <result property="attention"    column="attention"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectHealthMedicalProcessVo">
+        select id, title, content, material, attention, create_time, status from health_medical_process
+    </sql>
+
+    <select id="selectHealthMedicalProcessList" parameterType="HealthMedicalProcess" resultMap="HealthMedicalProcessResult">
+        <include refid="selectHealthMedicalProcessVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectHealthMedicalProcessById" parameterType="Long" resultMap="HealthMedicalProcessResult">
+        <include refid="selectHealthMedicalProcessVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHealthMedicalProcess" parameterType="HealthMedicalProcess" useGeneratedKeys="true" keyProperty="id">
+        insert into health_medical_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="material != null and material != ''">material,</if>
+            <if test="attention != null and attention != ''">attention,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="material != null and material != ''">#{material},</if>
+            <if test="attention != null and attention != ''">#{attention},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHealthMedicalProcess" parameterType="HealthMedicalProcess">
+        update health_medical_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="material != null and material != ''">material = #{material},</if>
+            <if test="attention != null and attention != ''">attention = #{attention},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHealthMedicalProcessById" parameterType="Long">
+        delete from health_medical_process where id = #{id}
+    </delete>
+
+    <delete id="deleteHealthMedicalProcessByIds" parameterType="String">
+        delete from health_medical_process where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

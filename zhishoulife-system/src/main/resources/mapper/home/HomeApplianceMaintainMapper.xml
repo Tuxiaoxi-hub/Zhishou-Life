@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhishoulife.system.mapper.HomeApplianceMaintainMapper">
+    
+    <resultMap type="HomeApplianceMaintain" id="HomeApplianceMaintainResult">
+        <result property="id"    column="id"    />
+        <result property="appName"    column="app_name"    />
+        <result property="content"    column="content"    />
+        <result property="cycle"    column="cycle"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="status"    column="STATUS"    />
+    </resultMap>
+
+    <sql id="selectHomeApplianceMaintainVo">
+        select id, app_name, content, cycle, create_time, STATUS from home_appliance_maintain
+    </sql>
+
+    <select id="selectHomeApplianceMaintainList" parameterType="HomeApplianceMaintain" resultMap="HomeApplianceMaintainResult">
+        <include refid="selectHomeApplianceMaintainVo"/>
+        <where>  
+            <if test="appName != null  and appName != ''"> and app_name like concat('%', #{appName}, '%')</if>
+            <if test="status != null "> and STATUS = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectHomeApplianceMaintainById" parameterType="Long" resultMap="HomeApplianceMaintainResult">
+        <include refid="selectHomeApplianceMaintainVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHomeApplianceMaintain" parameterType="HomeApplianceMaintain" useGeneratedKeys="true" keyProperty="id">
+        insert into home_appliance_maintain
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appName != null and appName != ''">app_name,</if>
+            <if test="content != null">content,</if>
+            <if test="cycle != null">cycle,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="status != null">STATUS,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appName != null and appName != ''">#{appName},</if>
+            <if test="content != null">#{content},</if>
+            <if test="cycle != null">#{cycle},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHomeApplianceMaintain" parameterType="HomeApplianceMaintain">
+        update home_appliance_maintain
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appName != null and appName != ''">app_name = #{appName},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="cycle != null">cycle = #{cycle},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="status != null">STATUS = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHomeApplianceMaintainById" parameterType="Long">
+        delete from home_appliance_maintain where id = #{id}
+    </delete>
+
+    <delete id="deleteHomeApplianceMaintainByIds" parameterType="String">
+        delete from home_appliance_maintain where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
